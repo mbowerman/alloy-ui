@@ -12,14 +12,12 @@ YUI.add('aui-form-validator-tests', function(Y) {
         return regex.test(val);
     };
 
-    Y.FormValidator.addCustomRules(
-        {
-            'imageURL': {
-                condition: isImageURL,
-                errorMessage: 'Please enter a valid URL that points to an image (jpg, jpeg, png, or gif).'
-            }
+    Y.FormValidator.addCustomRules({
+        'imageURL': {
+            condition: isImageURL,
+            errorMessage: 'Please enter a valid URL that points to an image (jpg, jpeg, png, or gif).'
         }
-    );
+    });
 
     formValidator = new Y.FormValidator({
         boundingBox: '#myForm',
@@ -88,13 +86,14 @@ YUI.add('aui-form-validator-tests', function(Y) {
                 forms;
 
             forms = Y.all('form');
-            forms.each(function (form) {
+            forms.each(function(form) {
                 form.simulate('submit');
             });
 
             elementWithoutError = Y.one('.form-group:not(.has-error)');
 
-            Y.Assert.isNull(elementWithoutError, 'There shouldn\'t be any element without class error');
+            Y.Assert.isNull(elementWithoutError,
+                'There shouldn\'t be any element without class error');
         },
 
         /*
@@ -155,14 +154,12 @@ YUI.add('aui-form-validator-tests', function(Y) {
                 return (val >= 50);
             };
 
-            Y.FormValidator.addCustomRules(
-                {
-                    'greaterThan50': {
-                        condition: gt50,
-                        errorMessage: 'The digit should be >=50'
-                    }
+            Y.FormValidator.addCustomRules({
+                'greaterThan50': {
+                    condition: gt50,
+                    errorMessage: 'The digit should be >=50'
                 }
-            );
+            });
 
             validator = new Y.FormValidator({
                 boundingBox: form,
@@ -197,20 +194,19 @@ YUI.add('aui-form-validator-tests', function(Y) {
          * @tests AUI-1958
          */
         'test custom optional rules': function() {
-            var form = Y.Node.create('<form><input name="always-fails" id="always-fails" type="text"></form>'),
+            var form = Y.Node.create(
+                    '<form><input name="always-fails" id="always-fails" type="text"></form>'),
                 input = form.one('input'),
                 validator;
 
-            Y.FormValidator.addCustomRules(
-                {
-                    'alwaysFailsValidation': {
-                        condition: function() {
-                            return false;
-                        },
-                        errorMessage: 'Give up, there\'s nothing you can do to pass this validation.'
-                    }
+            Y.FormValidator.addCustomRules({
+                'alwaysFailsValidation': {
+                    condition: function() {
+                        return false;
+                    },
+                    errorMessage: 'Give up, there\'s nothing you can do to pass this validation.'
                 }
-            );
+            });
 
             validator = new Y.FormValidator({
                 boundingBox: form,
@@ -233,6 +229,49 @@ YUI.add('aui-form-validator-tests', function(Y) {
             Y.Assert.isTrue(validator.hasErrors());
         },
 
+        /*
+         * Check if validator defaults to 'required' error message when applicable
+         * @tests AUI-2043
+         */
+        'test required error message': function() {
+            var form = Y.Node.create(
+                    '<form><input name="emailAddress" id="emailAddress" type="text"></form>'),
+                input = form.one('input'),
+                validator;
+
+            validator = new Y.FormValidator({
+                boundingBox: form,
+                fieldStrings: {
+                    emailAddress: {
+                        email: 'Please enter a valid email address.',
+                        required: 'This field is required.'
+                    }
+                },
+                rules: {
+                    emailAddress: {
+                        email: true,
+                        required: true
+                    }
+                },
+                showMessages: true,
+                showAllMessages: false
+            });
+
+            var container = form.getFieldStackErrorContainer(validator.field);
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(container[0] === 'This field is required.');
+            Y.Assert.isTrue(container.length === 1);
+
+            input.attr('value', '         ');
+
+            form.simulate('submit');
+
+            Y.Assert.isTrue(container[0] === 'This field is required.');
+            Y.Assert.isTrue(container.length === 1);
+        },
+
         _assertValidatorNextLabel: function(input) {
             var inputNode,
                 textNode;
@@ -241,7 +280,8 @@ YUI.add('aui-form-validator-tests', function(Y) {
 
             textNode = inputNode.get('nextSibling');
 
-            Y.Assert.isTrue(textNode.get('nodeType') === 3, 'Next to the input should be a text node');
+            Y.Assert.isTrue(textNode.get('nodeType') === 3,
+                'Next to the input should be a text node');
 
             if (Y.FormValidator.isCheckable(inputNode)) {
                 textNode = inputNode.ancestor('.form-group').get('lastChild').previous();

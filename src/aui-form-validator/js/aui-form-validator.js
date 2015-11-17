@@ -845,9 +845,10 @@ var FormValidator = A.Component.create({
             var instance = this;
 
             if (!instance.get('showAllMessages')) {
-                if (errors.indexOf("required") != -1) {
-                    errors = ["required"];
-                } else {
+                if (errors.indexOf('required') !== -1) {
+                    errors = ['required'];
+                }
+                else {
                     errors = errors.slice(0, 1);
                 }
             }
@@ -1144,7 +1145,7 @@ var FormValidator = A.Component.create({
         _findFieldLabel: function(field) {
             var labelCssClass = '.' + this.get('labelCssClass'),
                 label = A.one('label[for=' + field.get('id') + ']') ||
-                    field.ancestor().previous(labelCssClass);
+                field.ancestor().previous(labelCssClass);
 
             if (!label) {
                 label = field.ancestor('.' + CSS_HAS_ERROR);
