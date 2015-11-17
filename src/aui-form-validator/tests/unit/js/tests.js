@@ -257,19 +257,21 @@ YUI.add('aui-form-validator-tests', function(Y) {
                 showAllMessages: false
             });
 
-            var container = form.getFieldStackErrorContainer(validator.field);
+            var errorMessage;
 
             form.simulate('submit');
 
-            Y.Assert.isTrue(container[0] === 'This field is required.');
-            Y.Assert.isTrue(container.length === 1);
+            errorMessage = validator._stackErrorContainers.emailAddress._node.innerText;
+
+            Y.Assert.isTrue(errorMessage === 'This field is required.');
 
             input.attr('value', '         ');
 
             form.simulate('submit');
 
-            Y.Assert.isTrue(container[0] === 'This field is required.');
-            Y.Assert.isTrue(container.length === 1);
+            errorMessage = validator._stackErrorContainers.emailAddress._node.innerText;
+
+            Y.Assert.isTrue(errorMessage === 'This field is required.');
         },
 
         _assertValidatorNextLabel: function(input) {
