@@ -558,6 +558,15 @@ var FormValidator = A.Component.create({
 				var radioFieldContainer = fieldContainer.ancestor('.aui-field-wrapper-content');
 
 				removeClasses(radioFieldContainer, [CONTAINER_VALID_CLASS, CONTAINER_ERROR_CLASS]);
+
+				if (radioFieldContainer) {
+					var siblings = fieldContainer.siblings();
+					if (siblings) {
+						A.each(siblings, function (sibling) {
+							removeClasses(sibling, [CONTAINER_VALID_CLASS, CONTAINER_ERROR_CLASS]);
+						});
+					}
+				}
 			}
 		},
 
